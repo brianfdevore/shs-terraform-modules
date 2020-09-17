@@ -1,0 +1,4 @@
+# Terraform ignore rules
+terraform.*
+*.terraform
+*.tfstate
