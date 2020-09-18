@@ -35,35 +35,37 @@ data "google_compute_zones" "available" {
 
 resource "google_compute_region_instance_group_manager" "mig" {
   provider           = google-beta
-  base_instance_name = var.hostname
   project            = var.project_id
+  name   = "${var.hostname}-mig"
+  description = "Compute VM Instance Group"
+  wait_for_instances = var.wait_for_instances
+  base_instance_name = var.hostname
 
   version {
     name              = "${var.hostname}-mig-version-0"
     instance_template = var.instance_template
   }
-
-  name   = "${var.hostname}-mig"
+  
   region = var.region
-  dynamic "named_port" {
-    for_each = var.named_ports
-    content {
-      name = lookup(named_port.value, "name", null)
-      port = lookup(named_port.value, "port", null)
-    }
-  }
+  distribution_policy_zones = local.distribution_policy_zones
   target_pools = var.target_pools
   target_size  = var.autoscaling_enabled ? null : var.target_size
-
-  wait_for_instances = var.wait_for_instances
-
+  
   dynamic "auto_healing_policies" {
     for_each = local.healthchecks
     content {
       health_check      = auto_healing_policies.value
       initial_delay_sec = var.health_check["initial_delay_sec"]
     }
-  }
+  }  
+  
+  dynamic "named_port" {
+    for_each = var.named_ports
+    content {
+      name = lookup(named_port.value, "name", null)
+      port = lookup(named_port.value, "port", null)
+    }
+  } 
 
   dynamic "stateful_disk" {
     for_each = var.stateful_disks
@@ -73,18 +75,18 @@ resource "google_compute_region_instance_group_manager" "mig" {
     }
   }
 
-  distribution_policy_zones = local.distribution_policy_zones
+  
   dynamic "update_policy" {
     for_each = var.update_policy
     content {
+      type                         = update_policy.value.type
       instance_redistribution_type = lookup(update_policy.value, "instance_redistribution_type", null)
-      max_surge_fixed              = lookup(update_policy.value, "max_surge_fixed", null)
+      minimal_action               = update_policy.value.minimal_action
       max_surge_percent            = lookup(update_policy.value, "max_surge_percent", null)
+      max_surge_fixed              = lookup(update_policy.value, "max_surge_fixed", null)
+      min_ready_sec                = lookup(update_policy.value, "min_ready_sec", null)
       max_unavailable_fixed        = lookup(update_policy.value, "max_unavailable_fixed", null)
       max_unavailable_percent      = lookup(update_policy.value, "max_unavailable_percent", null)
-      min_ready_sec                = lookup(update_policy.value, "min_ready_sec", null)
-      minimal_action               = update_policy.value.minimal_action
-      type                         = update_policy.value.type
     }
   }
 
@@ -113,12 +115,7 @@ resource "google_compute_region_autoscaler" "autoscaler" {
     max_replicas    = var.max_replicas
     min_replicas    = var.min_replicas
     cooldown_period = var.cooldown_period
-    dynamic "cpu_utilization" {
-      for_each = var.autoscaling_cpu
-      content {
-        target = lookup(cpu_utilization.value, "target", null)
-      }
-    }
+    
     dynamic "metric" {
       for_each = var.autoscaling_metric
       content {
