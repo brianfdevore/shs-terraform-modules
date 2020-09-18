@@ -59,36 +59,36 @@ resource "google_compute_region_instance_group_manager" "mig" {
     }
   }  
   
-  dynamic "named_port" {
-    for_each = var.named_ports
-    content {
-      name = lookup(named_port.value, "name", null)
-      port = lookup(named_port.value, "port", null)
-    }
-  } 
+#   dynamic "named_port" {
+#     for_each = var.named_ports
+#     content {
+#       name = lookup(named_port.value, "name", null)
+#       port = lookup(named_port.value, "port", null)
+#     }
+#   } 
 
-  dynamic "stateful_disk" {
-    for_each = var.stateful_disks
-    content {
-      device_name = stateful_disk.value.device_name
-      delete_rule = lookup(stateful_disk.value, "delete_rule", null)
-    }
-  }
+#   dynamic "stateful_disk" {
+#     for_each = var.stateful_disks
+#     content {
+#       device_name = stateful_disk.value.device_name
+#       delete_rule = lookup(stateful_disk.value, "delete_rule", null)
+#     }
+#   }
 
   
-  dynamic "update_policy" {
-    for_each = var.update_policy
-    content {
-      type                         = update_policy.value.type
-      instance_redistribution_type = lookup(update_policy.value, "instance_redistribution_type", null)
-      minimal_action               = update_policy.value.minimal_action
-      max_surge_percent            = lookup(update_policy.value, "max_surge_percent", null)
-      max_surge_fixed              = lookup(update_policy.value, "max_surge_fixed", null)
-      min_ready_sec                = lookup(update_policy.value, "min_ready_sec", null)
-      max_unavailable_fixed        = lookup(update_policy.value, "max_unavailable_fixed", null)
-      max_unavailable_percent      = lookup(update_policy.value, "max_unavailable_percent", null)
-    }
-  }
+#   dynamic "update_policy" {
+#     for_each = var.update_policy
+#     content {
+#       type                         = update_policy.value.type
+#       instance_redistribution_type = lookup(update_policy.value, "instance_redistribution_type", null)
+#       minimal_action               = update_policy.value.minimal_action
+#       max_surge_percent            = lookup(update_policy.value, "max_surge_percent", null)
+#       max_surge_fixed              = lookup(update_policy.value, "max_surge_fixed", null)
+#       min_ready_sec                = lookup(update_policy.value, "min_ready_sec", null)
+#       max_unavailable_fixed        = lookup(update_policy.value, "max_unavailable_fixed", null)
+#       max_unavailable_percent      = lookup(update_policy.value, "max_unavailable_percent", null)
+#     }
+#   }
 
   lifecycle {
     create_before_destroy = true
