@@ -55,33 +55,33 @@ variable "distribution_policy_zones" {
 #################
 # Stateful disks
 #################
-variable "stateful_disks" {
-  description = "Disks created on the instances that will be preserved on instance delete. https://cloud.google.com/compute/docs/instance-groups/configuring-stateful-disks-in-migs"
-  type = list(object({
-    device_name = string
-    delete_rule = string
-  }))
-  default = []
-}
+# variable "stateful_disks" {
+#   description = "Disks created on the instances that will be preserved on instance delete. https://cloud.google.com/compute/docs/instance-groups/configuring-stateful-disks-in-migs"
+#   type = list(object({
+#     device_name = string
+#     delete_rule = string
+#   }))
+#   default = []
+# }
 
 #################
 # Rolling Update
 #################
 
-variable "update_policy" {
-  description = "The rolling update policy. https://www.terraform.io/docs/providers/google/r/compute_region_instance_group_manager.html#rolling_update_policy"
-  type = list(object({
-    max_surge_fixed              = number
-    instance_redistribution_type = string
-    max_surge_percent            = number
-    max_unavailable_fixed        = number
-    max_unavailable_percent      = number
-    min_ready_sec                = number
-    minimal_action               = string
-    type                         = string
-  }))
-  default = []
-}
+# variable "update_policy" {
+#   description = "The rolling update policy. https://www.terraform.io/docs/providers/google/r/compute_region_instance_group_manager.html#rolling_update_policy"
+#   type = list(object({
+#     max_surge_fixed              = number
+#     instance_redistribution_type = string
+#     max_surge_percent            = number
+#     max_unavailable_fixed        = number
+#     max_unavailable_percent      = number
+#     min_ready_sec                = number
+#     minimal_action               = string
+#     type                         = string
+#   }))
+#   default = []
+# }
 
 ##############
 # Healthcheck
@@ -181,14 +181,14 @@ variable "subnetwork_project" {
   default     = ""
 }
 
-variable "named_ports" {
-  description = "Named name and named port. https://cloud.google.com/load-balancing/docs/backend-service#named_ports"
-  type = list(object({
-    name = string
-    port = number
-  }))
-  default = []
-}
+# variable "named_ports" {
+#   description = "Named name and named port. https://cloud.google.com/load-balancing/docs/backend-service#named_ports"
+#   type = list(object({
+#     name = string
+#     port = number
+#   }))
+#   default = []
+# }
 
 variable "wait_for_instances" {
   description = "Whether to wait for all instances to be created/updated before returning. Note that if this is set to true and the operation does not succeed, Terraform will continue trying until it times out."
