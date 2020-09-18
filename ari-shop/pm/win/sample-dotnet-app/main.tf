@@ -34,6 +34,7 @@ resource "google_compute_instance" "vm_instance" {
   metadata = {
     enable-oslogin  = "True"
     app-environment = var.env
+    owner = "Brian DeVore"
     #windows-startup-script-ps1 = TODO - https://cloud.google.com/compute/docs/startupscript
   }
 
